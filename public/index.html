@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEGAN-MD Pairing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .code-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px dashed #667eea;
+        }
+
+        .code {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #667eea;
+        }
+
+        .steps {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .steps h3 {
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .steps ol {
+            padding-left: 20px;
+            color: #333;
+        }
+
+        .steps li {
+            margin: 8px 0;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            background: #28a745;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MEGAN-MD <span class="badge">v2</span></h1>
+            <p>Multi-User WhatsApp Pairing System</p>
+        </div>
+
+        <div class="input-group">
+            <label>📱 WhatsApp Number (with country code)</label>
+            <input type="text" id="phone" placeholder="e.g., 254712345678" value="254">
+            <small style="color: #666; display: block; margin-top: 5px;">
+                Include country code (254 for Kenya, 92 for Pakistan)
+            </small>
+        </div>
+
+        <button id="pairBtn" onclick="startPairing()">
+            Generate Pairing Code
+        </button>
+
+        <div class="result" id="result">
+            <div style="text-align: center; margin-bottom: 10px;">
+                ✅ Your Pairing Code:
+            </div>
+            <div class="code-box">
+                <span class="code" id="code">XXXX-XXXX</span>
+            </div>
+
+            <div class="steps">
+                <h3>📱 How to connect:</h3>
+                <ol>
+                    <li>Open <strong>WhatsApp</strong> on your phone</li>
+                    <li>Go to <strong>Settings → Linked Devices</strong></li>
+                    <li>Tap <strong>"Link a Device"</strong></li>
+                    <li>Enter this code: <strong id="codeDisplay"></strong></li>
+                </ol>
+            </div>
+
+            <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                📋 Copy Code
+            </button>
+        </div>
+
+        <div class="error" id="error"></div>
+        <div class="status" id="status"></div>
+        <div class="footer">⚡ Powered by MEGAN-MD | Multi-User Ready</div>
+    </div>
+
+    <script>
+        let sessionId = null;
+        let pollInterval = null;
+
+        async function startPairing() {
+            const phone = document.getElementById('phone').value.replace(/[^0-9]/g, '');
+            const btn = document.getElementById('pairBtn');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+            const status = document.getElementById('status');
+
+            // Hide previous results
+            result.style.display = 'none';
+            error.style.display = 'none';
+            status.innerHTML = '';
+
+            // Validate
+            if (phone.length < 10) {
+                showError('Please enter a valid phone number with country code');
+                return;
+            }
+
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span> Generating...';
+            status.innerHTML = '⏳ Initiating pairing request...';
+
+            try {
+                const response = await fetch(`/code?number=${phone}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionId = data.sessionId;
+                    status.innerHTML = '✅ Request received! Waiting for code...';
+                    startPolling(sessionId);
+                } else {
+                    showError(data.error || 'Failed to start pairing');
+                    resetButton();
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+                resetButton();
+            }
+        }
+
+        function startPolling(sessionId) {
+            if (pollInterval) clearInterval(pollInterval);
+
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/code/status/${sessionId}`);
+                    const data = await response.json();
+
+                    if (data.status === 'code_ready') {
+                        clearInterval(pollInterval);
+                        displayCode(data.code);
+                    } else if (data.status === 'error') {
+                        clearInterval(pollInterval);
+                        showError(data.error || 'Failed to generate code');
+                        resetButton();
+                    } else if (data.status === 'expired') {
+                        clearInterval(pollInterval);
+                        showError('Session expired. Please try again.');
+                        resetButton();
+                    } else {
+                        // Update status
+                        document.getElementById('status').innerHTML = 
+                            `⏳ ${data.status}... (${data.timeLeft || 'waiting'}s)`;
+                    }
+                } catch (err) {
+                    console.error('Polling error:', err);
+                }
+            }, 2000);
+
+            // Timeout after 2 minutes
+            setTimeout(() => {
+                if (pollInterval) {
+                    clearInterval(pollInterval);
+                    showError('Request timed out. Please try again.');
+                    resetButton();
+                }
+            }, 120000);
+        }
+
+        function displayCode(code) {
+            document.getElementById('code').textContent = code;
+            document.getElementById('codeDisplay').textContent = code;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('status').innerHTML = '✅ Code ready! Enter it in WhatsApp.';
+            
+            resetButton();
+        }
+
+        function copyCode() {
+            const code = document.getElementById('code').textContent;
+            
+            if (code && code !== 'XXXX-XXXX') {
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.getElementById('copyBtn');
+                    btn.innerHTML = '✅ Copied!';
+                    btn.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '📋 Copy Code';
+                        btn.style.background = '';
+                    }, 2000);
+                });
+            }
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            
+            setTimeout(() => {
+                error.style.display = 'none';
+            }, 5000);
+        }
+
+        function resetButton() {
+            const btn = document.getElementById('pairBtn');
+            btn.disabled = false;
+            btn.innerHTML = 'Generate Pairing Code';
+        }
+
+        // Enter key
+        document.getElementById('phone').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') startPairing();
+        });
+
+        // Auto-format
+        document.getElementById('phone').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+</body>
+</html>
