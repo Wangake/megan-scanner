@@ -1,0 +1,32 @@
+{
+  "name": "megan-md-pairing",
+  "version": "2.0.0",
+  "description": "MEGAN-MD Multi-User WhatsApp Pairing System",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "clean": "rm -rf temp sessions"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "latest",
+    "@hapi/boom": "^10.0.1",
+    "express": "^4.18.2",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "qrcode": "^1.5.3",
+    "fs-extra": "^11.2.0",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "keywords": ["whatsapp", "bot", "pairing", "megan-md", "multi-device"],
+  "author": "Wanga",
+  "license": "MIT"
+}
