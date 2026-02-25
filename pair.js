@@ -193,7 +193,7 @@ async function processPairing(number, sessionId) {
             version,
             auth: state,
             logger: pino({ level: 'silent' }),
-            browser: ["Ubuntu", "Chrome", "120.0.0"], // Works on Railway
+            browser: ["Ubuntu", "Chrome", "20"], // Works on Railway
             syncFullHistory: false,
             markOnlineOnConnect: false,
             connectTimeoutMs: 60000,
