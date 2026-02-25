@@ -1,0 +1,9 @@
+node_modules/
+temp/
+sessions/
+.DS_Store
+*.log
+.env
+creds.json
+*.code
+*.error
